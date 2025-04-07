@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Institute Management System</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <style>
+      :root {
+        --primary-color: #3a86ff;
+        --secondary-color: #8338ec;
+        --accent-color: #ff006e;
+        --success-color: #38b000;
+        --warning-color: #ffbe0b;
+        --danger-color: #ff5a5f;
+        --light-bg: #f8f9fa;
+        --sidebar-width: 280px;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        overflow-x: hidden;
+      }
+
+      /* Sidebar styles */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: var(--sidebar-width);
+        background: linear-gradient(to bottom, #3a86ff, #8338ec);
+        color: white;
+        z-index: 1000;
+        transition: all 0.3s;
+        box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar-header {
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar-brand {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0;
+      }
+
+      .sidebar-menu {
+        padding: 0;
+        list-style: none;
+        margin-top: 20px;
+      }
+
+      .sidebar-menu-item {
+        padding: 12px 20px;
+        transition: all 0.3s;
+        border-left: 4px solid transparent;
+      }
+
+      .sidebar-menu-item.active {
+        background: rgba(255, 255, 255, 0.1);
+        border-left: 4px solid white;
+      }
+
+      .sidebar-menu-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+      }
+
+      .sidebar-menu-item a {
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+      }
+
+      .sidebar-menu-item i {
+        margin-right: 15px;
+        width: 20px;
+        text-align: center;
+      }
+
+      .sidebar-menu-divider {
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.1);
+        margin: 10px 20px;
+      }
+
+      /* Main content styles */
+      .main-content {
+        margin-left: var(--sidebar-width);
+        padding: 20px;
+        transition: all 0.3s;
+      }
+
+      .navbar {
+        background-color: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+      }
+
+      .user-dropdown {
+        display: flex;
+        align-items: center;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        margin-right: 10px;
+      }
+
+      /* Cards */
+      .stats-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+        transition: all 0.3s;
+      }
+
+      .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .stats-card-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 15px;
+      }
+
+      .stats-card-icon.students {
+        background-color: rgba(58, 134, 255, 0.1);
+        color: var(--primary-color);
+      }
+
+      .stats-card-icon.teachers {
+        background-color: rgba(131, 56, 236, 0.1);
+        color: var(--secondary-color);
+      }
+
+      .stats-card-icon.courses {
+        background-color: rgba(255, 0, 110, 0.1);
+        color: var(--accent-color);
+      }
+
+      .stats-card-icon.payments {
+        background-color: rgba(56, 176, 0, 0.1);
+        color: var(--success-color);
+      }
+
+      .stats-card-title {
+        color: #6c757d;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .stats-card-value {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 0;
+      }
+
+      .stats-card-change {
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .stats-card-change.positive {
+        color: var(--success-color);
+      }
+
+      .stats-card-change.negative {
+        color: var(--danger-color);
+      }
+
+      /* Charts and tables */
+      .chart-container {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+      }
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .chart-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 0;
+      }
+
+      .table-container {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+      }
+
+      .table-responsive {
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .table {
+        margin-bottom: 0;
+      }
+
+      .table th {
+        font-weight: 600;
+        border-top: none;
+        border-bottom-width: 1px;
+      }
+
+      .table td,
+      .table th {
+        vertical-align: middle;
+      }
+
+      .status-badge {
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .status-badge.active {
+        background-color: rgba(56, 176, 0, 0.1);
+        color: var(--success-color);
+      }
+
+      .status-badge.inactive {
+        background-color: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+      }
+
+      .status-badge.pending {
+        background-color: rgba(255, 190, 11, 0.1);
+        color: var(--warning-color);
+      }
+
+      /* Calendar styles */
+      .calendar-container {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .calendar-header {
+        padding: 15px 20px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .calendar-grid {
+        padding: 15px;
+      }
+
+      .calendar-day {
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+      }
+
+      .calendar-date {
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .calendar-date:hover {
+        background-color: #f8f9fa;
+      }
+
+      .calendar-date.active {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .calendar-date.has-event {
+        border: 2px solid var(--accent-color);
+      }
+
+      .calendar-date.other-month {
+        color: #c5ccd6;
+      }
+
+      /* Upcoming classes */
+      .class-item {
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        background-color: #f8f9fa;
+        border-left: 4px solid var(--primary-color);
+      }
+
+      .class-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .class-time {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .class-subject {
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .class-details {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #6c757d;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 992px) {
+        .sidebar {
+          width: 70px;
+          text-align: center;
+        }
+
+        .sidebar-brand {
+          display: none;
+        }
+
+        .sidebar-menu-item span {
+          display: none;
+        }
+
+        .sidebar-menu-item i {
+          margin-right: 0;
+        }
+
+        .main-content {
+          margin-left: 70px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h5 class="sidebar-brand">Sulaimany Institute</h5>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item active">
+          <a href="home.html">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item">
+          <a href="teachers.html">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span>Teachers</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item">
+          <a href="students.html">
+            <i class="fas fa-user-graduate"></i>
+            <span>Students</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item">
+          <a href="subjects.html">
+            <i class="fas fa-book"></i>
+            <span>Subjects</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item">
+          <a href="classes.html">
+            <i class="fas fa-chalkboard"></i>
+            <span>Classes and Schedules</span>
+          </a>
+        </li>
+        <div class="sidebar-menu-divider"></div>
+        <li class="sidebar-menu-item">
+          <a href="payments-students.html">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Student Payments</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Navigation -->
+      <div class="navbar">
+        <div>
+          <h5 class="navbar-brand mb-0">Dashboard</h5>
+          <span class="text-muted">Welcome back Admin!</span>
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="dropdown me-3">
+            <button
+              class="btn btn-light position-relative"
+              type="button"
+              id="notificationsDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="fas fa-bell"></i>
+              <span
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+              >
+                3
+              </span>
+            </button>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="notificationsDropdown"
+            >
+              <li>
+                <a class="dropdown-item" href="students.html"
+                  >New student registration</a
+                >
+              </li>
+              <li><a class="dropdown-item" href="#">Payment received</a></li>
+              <li>
+                <a class="dropdown-item" href="classes.html"
+                  >Schedule updated</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="dropdown">
+            <div
+              class="user-dropdown"
+              id="userDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style="cursor: pointer"
+            >
+              <div class="user-avatar">A</div>
+              <div>
+                <div class="fw-bold">Rawyar Salar</div>
+                <div class="text-muted small">Administrator</div>
+              </div>
+              <i class="fas fa-chevron-down ms-2"></i>
+            </div>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="userDropdown"
+            >
+              <li>
+                <a class="dropdown-item" href="index.html"
+                  ><i class="fas fa-sign-out-alt me-2"></i> Logout</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="row">
+        <div class="col-xl-3 col-md-6">
+          <div class="stats-card">
+            <div class="stats-card-icon students">
+              <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="stats-card-title">TOTAL STUDENTS</div>
+            <div class="stats-card-value">2,845</div>
+            <div class="stats-card-change positive mt-2">
+              <i class="fas fa-arrow-up"></i> 12% from last month
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+          <div class="stats-card">
+            <div class="stats-card-icon teachers">
+              <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <div class="stats-card-title">TOTAL TEACHERS</div>
+            <div class="stats-card-value">147</div>
+            <div class="stats-card-change positive mt-2">
+              <i class="fas fa-arrow-up"></i> 5% from last month
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+          <div class="stats-card">
+            <div class="stats-card-icon courses">
+              <i class="fas fa-book"></i>
+            </div>
+            <div class="stats-card-title">ACTIVE COURSES</div>
+            <div class="stats-card-value">42</div>
+            <div class="stats-card-change positive mt-2">
+              <i class="fas fa-arrow-up"></i> 8% from last month
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+          <div class="stats-card">
+            <div class="stats-card-icon payments">
+              <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="stats-card-title">MONTHLY REVENUE</div>
+            <div class="stats-card-value">$124,529</div>
+            <div class="stats-card-change positive mt-2">
+              <i class="fas fa-arrow-up"></i> 18% from last month
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts and Tables -->
+
+      <div class="row">
+        <!-- Recent Students -->
+        <div class="col-xl-6">
+          <div class="table-container">
+            <div class="chart-header">
+              <h5 class="chart-title">Recent Students</h5>
+              <a href="students.html" class="btn btn-primary btn-sm"
+                >View All</a
+              >
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Enrollment Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div
+                          class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                          style="width: 40px; height: 40px"
+                        >
+                          JD
+                        </div>
+                        <div>
+                          <div class="fw-bold">Rawyar Salar</div>
+                          <div class="text-muted small">
+                            Rawyarsalar@gmail.com
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Mar 28, 2025</td>
+                    <td><span class="status-badge active">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div
+                          class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                          style="width: 40px; height: 40px"
+                        >
+                          AS
+                        </div>
+                        <div>
+                          <div class="fw-bold">Ahmed Muhamad</div>
+                          <div class="text-muted small">
+                            ahmadmuhamadh@gmail.com
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Mar 27, 2025</td>
+                    <td><span class="status-badge active">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div
+                          class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                          style="width: 40px; height: 40px"
+                        >
+                          RJ
+                        </div>
+                        <div>
+                          <div class="fw-bold">Shkar Salar</div>
+                          <div class="text-muted small">
+                            shkarsalar@gmail.com
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>Mar 26, 2025</td>
+                    <td><span class="status-badge pending">Pending</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Classes -->
+        <div class="col-xl-6">
+          <div class="table-container">
+            <div class="chart-header">
+              <h5 class="chart-title">Upcoming Classes</h5>
+              <a href="classes.html" class="btn btn-primary btn-sm"
+                >View Schedule</a
+              >
+            </div>
+            <div class="row">
+              <div class="col-md-5">
+                <div class="calendar-container">
+                  <div class="calendar-header">
+                    <h6 class="mb-0">April 2025</h6>
+                    <div>
+                      <button class="btn btn-sm btn-light">
+                        <i class="fas fa-chevron-left"></i>
+                      </button>
+                      <button class="btn btn-sm btn-light">
+                        <i class="fas fa-chevron-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="calendar-grid">
+                    <div class="row text-center mb-2">
+                      <div class="col calendar-day">Su</div>
+                      <div class="col calendar-day">Mo</div>
+                      <div class="col calendar-day">Tu</div>
+                      <div class="col calendar-day">We</div>
+                      <div class="col calendar-day">Th</div>
+                      <div class="col calendar-day">Fr</div>
+                      <div class="col calendar-day">Sa</div>
+                    </div>
+                    <div class="row text-center mb-2">
+                      <div class="col">
+                        <div class="calendar-date other-month">30</div>
+                      </div>
+                      <div class="col">
+                        <div class="calendar-date other-month">31</div>
+                      </div>
+                      <div class="col"><div class="calendar-date">1</div></div>
+                      <div class="col">
+                        <div class="calendar-date active">2</div>
+                      </div>
+                      <div class="col">
+                        <div class="calendar-date has-event">3</div>
+                      </div>
+                      <div class="col"><div class="calendar-date">4</div></div>
+                      <div class="col"><div class="calendar-date">5</div></div>
+                    </div>
+                    <div class="row text-center mb-2">
+                      <div class="col"><div class="calendar-date">6</div></div>
+                      <div class="col">
+                        <div class="calendar-date has-event">7</div>
+                      </div>
+                      <div class="col"><div class="calendar-date">8</div></div>
+                      <div class="col"><div class="calendar-date">9</div></div>
+                      <div class="col"><div class="calendar-date">10</div></div>
+                      <div class="col">
+                        <div class="calendar-date has-event">11</div>
+                      </div>
+                      <div class="col"><div class="calendar-date">12</div></div>
+                    </div>
+                    <div class="row text-center mb-2">
+                      <div class="col"><div class="calendar-date">13</div></div>
+                      <div class="col"><div class="calendar-date">14</div></div>
+                      <div class="col">
+                        <div class="calendar-date has-event">15</div>
+                      </div>
+                      <div class="col"><div class="calendar-date">16</div></div>
+                      <div class="col"><div class="calendar-date">17</div></div>
+                      <div class="col"><div class="calendar-date">18</div></div>
+                      <div class="col"><div class="calendar-date">19</div></div>
+                    </div>
+                    <div class="row text-center">
+                      <div class="col"><div class="calendar-date">20</div></div>
+                      <div class="col"><div class="calendar-date">21</div></div>
+                      <div class="col"><div class="calendar-date">22</div></div>
+                      <div class="col"><div class="calendar-date">23</div></div>
+                      <div class="col"><div class="calendar-date">24</div></div>
+                      <div class="col"><div class="calendar-date">25</div></div>
+                      <div class="col"><div class="calendar-date">26</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-7">
+                <div class="class-item">
+                  <div class="class-time">9:00 AM - 10:30 AM</div>
+                  <div class="class-subject">Advanced English Grammar</div>
+                  <div class="class-details">
+                    <span
+                      ><i class="fas fa-user-tie me-1"></i> Sarah Johnson</span
+                    >
+                    <span><i class="fas fa-users me-1"></i> 24 students</span>
+                  </div>
+                </div>
+                <div class="class-item">
+                  <div class="class-time">11:00 AM - 12:30 PM</div>
+                  <div class="class-subject">Mathematics - Calculus</div>
+                  <div class="class-details">
+                    <span
+                      ><i class="fas fa-user-tie me-1"></i> David Clark</span
+                    >
+                    <span><i class="fas fa-users me-1"></i> 18 students</span>
+                  </div>
+                </div>
+                <div class="class-item">
+                  <div class="class-time">2:00 PM - 3:30 PM</div>
+                  <div class="class-subject">
+                    Computer Science - Python Programming
+                  </div>
+                  <div class="class-details">
+                    <span
+                      ><i class="fas fa-user-tie me-1"></i> Michael Brown</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Bootstrap JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

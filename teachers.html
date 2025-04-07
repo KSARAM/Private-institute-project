@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Same meta tags and CDN links as home page -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teachers Management - Sulaimany Institute</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      /* Include all CSS from home page here */
+      :root {
+        --primary-color: #3a86ff;
+        --secondary-color: #8338ec;
+        --accent-color: #ff006e;
+        --success-color: #38b000;
+        --warning-color: #ffbe0b;
+        --danger-color: #ff5a5f;
+        --light-bg: #f8f9fa;
+        --sidebar-width: 280px;
+      }
+      body {
+        background-color: #f5f7fa;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        overflow-x: hidden;
+      }
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: var(--sidebar-width);
+        background: linear-gradient(to bottom, #3a86ff, #8338ec);
+        color: white;
+        z-index: 1000;
+        transition: all 0.3s;
+        box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar-header {
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar-brand {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0;
+      }
+
+      .sidebar-menu {
+        padding: 0;
+        list-style: none;
+        margin-top: 20px;
+      }
+
+      .sidebar-menu-item {
+        padding: 12px 20px;
+        transition: all 0.3s;
+        border-left: 4px solid transparent;
+      }
+
+      .sidebar-menu-item.active {
+        background: rgba(255, 255, 255, 0.1);
+        border-left: 4px solid white;
+      }
+
+      .sidebar-menu-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+      }
+
+      .sidebar-menu-item a {
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+      }
+
+      .sidebar-menu-item i {
+        margin-right: 15px;
+        width: 20px;
+        text-align: center;
+      }
+
+      .sidebar-menu-divider {
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.1);
+        margin: 10px 20px;
+      }
+
+      /* Main content styles */
+      .main-content {
+        margin-left: var(--sidebar-width);
+        padding: 20px;
+        transition: all 0.3s;
+      }
+
+      .navbar {
+        background-color: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+      }
+
+      .user-dropdown {
+        display: flex;
+        align-items: center;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        margin-right: 10px;
+      }
+
+      /* Cards */
+      .stats-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+        transition: all 0.3s;
+      }
+
+      .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .stats-card-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 15px;
+      }
+
+      .stats-card-icon.students {
+        background-color: rgba(58, 134, 255, 0.1);
+        color: var(--primary-color);
+      }
+
+      .stats-card-icon.teachers {
+        background-color: rgba(131, 56, 236, 0.1);
+        color: var(--secondary-color);
+      }
+
+      .stats-card-icon.courses {
+        background-color: rgba(255, 0, 110, 0.1);
+        color: var(--accent-color);
+      }
+
+      .stats-card-icon.payments {
+        background-color: rgba(56, 176, 0, 0.1);
+        color: var(--success-color);
+      }
+
+      .stats-card-title {
+        color: #6c757d;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .stats-card-value {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 0;
+      }
+
+      .stats-card-change {
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .stats-card-change.positive {
+        color: var(--success-color);
+      }
+
+      .stats-card-change.negative {
+        color: var(--danger-color);
+      }
+
+      /* Charts and tables */
+      .chart-container {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+      }
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .chart-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 0;
+      }
+
+      .table-container {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+      }
+
+      .table-responsive {
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .table {
+        margin-bottom: 0;
+      }
+
+      .table th {
+        font-weight: 600;
+        border-top: none;
+        border-bottom-width: 1px;
+      }
+
+      .table td,
+      .table th {
+        vertical-align: middle;
+      }
+
+      .status-badge {
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .status-badge.active {
+        background-color: rgba(56, 176, 0, 0.1);
+        color: var(--success-color);
+      }
+
+      .status-badge.inactive {
+        background-color: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+      }
+
+      .status-badge.pending {
+        background-color: rgba(255, 190, 11, 0.1);
+        color: var(--warning-color);
+      }
+
+      /* Calendar styles */
+      .calendar-container {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .calendar-header {
+        padding: 15px 20px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .calendar-grid {
+        padding: 15px;
+      }
+
+      .calendar-day {
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+      }
+
+      .calendar-date {
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .calendar-date:hover {
+        background-color: #f8f9fa;
+      }
+
+      .calendar-date.active {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .calendar-date.has-event {
+        border: 2px solid var(--accent-color);
+      }
+
+      .calendar-date.other-month {
+        color: #c5ccd6;
+      }
+
+      /* Upcoming classes */
+      .class-item {
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        background-color: #f8f9fa;
+        border-left: 4px solid var(--primary-color);
+      }
+
+      .class-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .class-time {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .class-subject {
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .class-details {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #6c757d;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 992px) {
+        .sidebar {
+          width: 70px;
+          text-align: center;
+        }
+
+        .sidebar-brand {
+          display: none;
+        }
+
+        .sidebar-menu-item span {
+          display: none;
+        }
+
+        .sidebar-menu-item i {
+          margin-right: 0;
+        }
+
+        .main-content {
+          margin-left: 70px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h5 class="sidebar-brand">Sulaimany Institute</h5>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="sidebar-menu-item">
+          <a href="home.html">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item active">
+          <a href="teachers.html">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span>Teachers</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item">
+          <a href="students.html">
+            <i class="fas fa-user-graduate"></i>
+            <span>Students</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item">
+          <a href="subjects.html">
+            <i class="fas fa-book"></i>
+            <span>Subjects</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item">
+          <a href="classes.html">
+            <i class="fas fa-chalkboard"></i>
+            <span>Classes and Schedules</span>
+          </a>
+        </li>
+        <div class="sidebar-menu-divider"></div>
+        <li class="sidebar-menu-item">
+          <a href="payments-students.html">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Student Payments</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Navigation -->
+      <div class="navbar">
+        <div>
+          <h5 class="navbar-brand mb-0">Teachers Management</h5>
+          <span class="text-muted">Manage faculty members and assignments</span>
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="dropdown me-3">
+            <button
+              class="btn btn-light position-relative"
+              type="button"
+              id="notificationsDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="fas fa-bell"></i>
+              <span
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+              >
+                3
+              </span>
+            </button>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="notificationsDropdown"
+            >
+              <li>
+                <a class="dropdown-item" href="students.html"
+                  >New student registration</a
+                >
+              </li>
+              <li><a class="dropdown-item" href="#">Payment received</a></li>
+              <li>
+                <a class="dropdown-item" href="classes.html"
+                  >Schedule updated</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="dropdown">
+            <div
+              class="user-dropdown"
+              id="userDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style="cursor: pointer"
+            >
+              <div class="user-avatar">A</div>
+              <div>
+                <div class="fw-bold">Rawyar Salar</div>
+                <div class="text-muted small">Administrator</div>
+              </div>
+              <i class="fas fa-chevron-down ms-2"></i>
+            </div>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="userDropdown"
+            >
+              <li>
+                <a class="dropdown-item" href="index.html"
+                  ><i class="fas fa-sign-out-alt me-2"></i> Logout</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Teacher Statistics Cards -->
+      <div class="row">
+        <div class="col-xl-3 col-md-6">
+          <div class="stats-card">
+            <div class="stats-card-icon teachers">
+              <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <div class="stats-card-title">TOTAL TEACHERS</div>
+            <div class="stats-card-value">147</div>
+            <div class="stats-card-change positive mt-2">
+              <i class="fas fa-arrow-up"></i> 5 new this month
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+          <div class="stats-card">
+            <div class="stats-card-icon courses">
+              <i class="fas fa-book-open"></i>
+            </div>
+            <div class="stats-card-title">SUBJECTS TAUGHT</div>
+            <div class="stats-card-value">42</div>
+            <div class="stats-card-change positive mt-2">
+              <i class="fas fa-arrow-up"></i> 3 new subjects
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+          <div class="stats-card">
+            <div class="stats-card-icon payments">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="stats-card-title">AVG. EXPERIENCE</div>
+            <div class="stats-card-value">5.2y</div>
+            <div class="stats-card-change negative mt-2">
+              <i class="fas fa-arrow-down"></i> 0.2y from last year
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+          <div class="stats-card">
+            <div class="stats-card-icon students">
+              <i class="fas fa-user-check"></i>
+            </div>
+            <div class="stats-card-title">ACTIVE TEACHERS</div>
+            <div class="stats-card-value">132</div>
+            <div class="stats-card-change positive mt-2">
+              <i class="fas fa-arrow-up"></i> 94% active rate
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Teachers Table -->
+      <div class="table-container">
+        <div class="chart-header">
+          <h5 class="chart-title">All Teachers</h5>
+          <button
+            class="btn btn-primary btn-sm"
+            data-bs-toggle="modal"
+            data-bs-target="#addTeacherModal"
+          >
+            <i class="fas fa-plus me-2"></i>Add New Teacher
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Teacher</th>
+                <th>Contact</th>
+                <th>Subjects</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="user-avatar me-3">SA</div>
+                    <div>
+                      <div class="fw-bold">Rawyar Salar</div>
+                      <div class="text-muted small">
+                        PhD in Computer Science
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="text-muted small">rawyar@institute.com</div>
+                  <div class="text-muted small">+964 750 123 4567</div>
+                </td>
+                <td>Programming, Algorithms</td>
+                <td><span class="status-badge active">Active</span></td>
+                <td>
+                  <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-secondary">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <!-- More teacher rows -->
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="user-avatar me-3">MA</div>
+                    <div>
+                      <div class="fw-bold">Mohammed Ahmed</div>
+                      <div class="text-muted small">MSc in Mathematics</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="text-muted small">mohammed@institute.com</div>
+                  <div class="text-muted small">+964 750 765 4321</div>
+                </td>
+                <td>Calculus, Statistics</td>
+                <td><span class="status-badge active">Active</span></td>
+                <td>
+                  <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-secondary">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="user-avatar me-3">HA</div>
+                    <div>
+                      <div class="fw-bold">ahmed Ali</div>
+                      <div class="text-muted small">
+                        BA in English Literature
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="text-muted small">ahmed@institute.com</div>
+                  <div class="text-muted small">+964 750 112 2334</div>
+                </td>
+                <td>English Grammar</td>
+                <td><span class="status-badge inactive">On Leave</span></td>
+                <td>
+                  <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-secondary">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="addTeacherModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold">Add New Teacher</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="teacherForm">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">First Name</label>
+                  <input type="text" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Last Name</label>
+                  <input type="text" class="form-control" required />
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Email Address</label>
+                  <input type="email" class="form-control" required />
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Phone Number</label>
+                  <input type="tel" class="form-control" required />
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Hire Date</label>
+                  <input type="date" class="form-control" required />
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Address</label>
+                  <textarea class="form-control" rows="2"></textarea>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Qualifications</label>
+                  <select class="form-select" required>
+                    <option value="">Select Qualification</option>
+                    <option>PhD</option>
+                    <option>Master's Degree</option>
+                    <option>Bachelor's Degree</option>
+                    <option>Diploma</option>
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Status</label>
+                  <select class="form-select" required>
+                    <option value="">Select Status</option>
+                    <option>Active</option>
+                    <option>Inactive</option>
+                    <option>On Leave</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="submit" form="teacherForm" class="btn btn-primary">
+              <i class="fas fa-save me-2"></i>Save Teacher
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Same scripts as home page -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const teacherForm = document.getElementById("teacherForm");
+        const teachersTable = document.querySelector(".table tbody");
+
+        teacherForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // Get form values
+          const firstName = document.getElementById("firstName").value.trim();
+          const lastName = document.getElementById("lastName").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const phone = document.getElementById("phone").value.trim();
+          const hireDate = document.getElementById("hireDate").value;
+          const address = document.getElementById("address").value.trim();
+          const qualifications =
+            document.getElementById("qualifications").value;
+          const status = document.getElementById("status").value;
+
+          // Generate avatar initials
+          const avatarInitials = (firstName[0] || "") + (lastName[0] || "");
+
+          // Create status badge
+          const statusClass =
+            {
+              Active: "active",
+              Inactive: "inactive",
+              "On Leave": "pending",
+            }[status] || "inactive";
+
+          // Create new table row
+          const newRow = document.createElement("tr");
+          newRow.innerHTML = `
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="user-avatar me-3">${avatarInitials}</div>
+                <div>
+                  <div class="fw-bold">${firstName} ${lastName}</div>
+                  <div class="text-muted small">${qualifications}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="text-muted small">${email}</div>
+              <div class="text-muted small">${phone}</div>
+            </td>
+            <td>${/* Add subjects field here if needed */ ""}</td>
+            <td><span class="status-badge ${statusClass}">${status}</span></td>
+            <td>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-secondary">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-primary">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          `;
+
+          // Add row to table
+          teachersTable.appendChild(newRow);
+
+          // Update statistics (basic example)
+          const totalTeachers = document.querySelector(".stats-card-value");
+          totalTeachers.textContent = parseInt(totalTeachers.textContent) + 1;
+
+          // Reset form and close modal
+          teacherForm.reset();
+          bootstrap.Modal.getInstance(
+            document.getElementById("addTeacherModal")
+          ).hide();
+        });
+
+        // Add IDs to form elements (should be added to HTML)
+        const formFields = [
+          ["firstName", "First Name"],
+          ["lastName", "Last Name"],
+          ["email", "Email Address"],
+          ["phone", "Phone Number"],
+          ["hireDate", "Hire Date"],
+          ["address", "Address"],
+          ["qualifications", "Qualifications"],
+          ["status", "Status"],
+        ];
+
+        formFields.forEach(([id, label]) => {
+          const input = Array.from(teacherForm.elements).find(
+            (el) => el.previousElementSibling?.textContent === label
+          );
+          if (input) input.id = id;
+        });
+      });
+    </script>
+    <!-- Add this new modal for viewing teacher details -->
+    <div class="modal fade" id="viewTeacherModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold">Teacher Details</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body" id="teacherDetailsContent">
+            <!-- Dynamic content will be inserted here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const teacherForm = document.getElementById("teacherForm");
+        const teachersTable = document.querySelector(".table tbody");
+        let editingRow = null;
+
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(
+          document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        );
+        tooltipTriggerList.map((trigger) => new bootstrap.Tooltip(trigger));
+
+        // Event delegation for action buttons
+        teachersTable.addEventListener("click", function (e) {
+          const target = e.target.closest("button");
+          if (!target) return;
+
+          const row = target.closest("tr");
+          const action = target.querySelector("i").className;
+
+          if (action.includes("fa-eye")) {
+            showViewModal(row);
+          } else if (action.includes("fa-edit")) {
+            showEditModal(row);
+          } else if (action.includes("fa-trash")) {
+            deleteTeacher(row);
+          }
+        });
+
+        // Add Teacher Form Submission
+        teacherForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          const formData = new FormData(teacherForm);
+          const data = Object.fromEntries(formData.entries());
+
+          if (editingRow) {
+            updateTeacherRow(editingRow, data);
+          } else {
+            addNewTeacher(data);
+          }
+
+          teacherForm.reset();
+          bootstrap.Modal.getInstance(
+            document.getElementById("addTeacherModal")
+          ).hide();
+          editingRow = null;
+        });
+
+        function addNewTeacher(data) {
+          const newRow = createTeacherRow(data);
+          teachersTable.appendChild(newRow);
+          updateStatistics(1);
+        }
+
+        function updateTeacherRow(row, data) {
+          const cells = row.cells;
+          // Update name and qualifications
+          cells[0].querySelector(
+            ".fw-bold"
+          ).textContent = `${data.firstName} ${data.lastName}`;
+          cells[0].querySelector(".text-muted").textContent =
+            data.qualifications;
+
+          // Update contact info
+          cells[1].children[0].textContent = data.email;
+          cells[1].children[1].textContent = data.phone;
+
+          // Update subjects
+          cells[2].textContent = Array.from(data.subjects).join(", ");
+
+          // Update status
+          const statusBadge = cells[3].querySelector(".status-badge");
+          statusBadge.className = `status-badge ${getStatusClass(data.status)}`;
+          statusBadge.textContent = data.status;
+
+          // Update avatar
+          const avatar = cells[0].querySelector(".user-avatar");
+          avatar.textContent = `${data.firstName[0]}${data.lastName[0]}`;
+        }
+
+        function deleteTeacher(row) {
+          if (confirm("Are you sure you want to delete this teacher?")) {
+            row.remove();
+            updateStatistics(-1);
+          }
+        }
+
+        function showViewModal(row) {
+          const cells = row.cells;
+          const content = `
+      <div class="mb-3">
+        <h6>${cells[0].querySelector(".fw-bold").textContent}</h6>
+        <p class="text-muted mb-0">${
+          cells[0].querySelector(".text-muted").textContent
+        }</p>
+      </div>
+      <div class="mb-3">
+        <p class="mb-1"><strong>Email:</strong> ${
+          cells[1].children[0].textContent
+        }</p>
+        <p class="mb-0"><strong>Phone:</strong> ${
+          cells[1].children[1].textContent
+        }</p>
+      </div>
+      <div class="mb-3">
+        <p class="mb-1"><strong>Subjects:</strong> ${cells[2].textContent}</p>
+        <p class="mb-0"><strong>Status:</strong> ${cells[3].textContent}</p>
+      </div>
+    `;
+          document.getElementById("teacherDetailsContent").innerHTML = content;
+          new bootstrap.Modal(
+            document.getElementById("viewTeacherModal")
+          ).show();
+        }
+
+        function showEditModal(row) {
+          editingRow = row;
+          const cells = row.cells;
+          const [firstName, lastName] = cells[0]
+            .querySelector(".fw-bold")
+            .textContent.split(" ");
+
+          // Populate form fields
+          teacherForm.querySelector("#firstName").value = firstName;
+          teacherForm.querySelector("#lastName").value = lastName;
+          teacherForm.querySelector("#email").value =
+            cells[1].children[0].textContent;
+          teacherForm.querySelector("#phone").value =
+            cells[1].children[1].textContent;
+          teacherForm.querySelector("#subjects").value =
+            cells[2].textContent.split(", ");
+          teacherForm.querySelector("#qualifications").value =
+            cells[0].querySelector(".text-muted").textContent;
+          teacherForm.querySelector("#status").value =
+            cells[3].textContent.trim();
+
+          // Update modal title
+          document.querySelector("#addTeacherModal .modal-title").textContent =
+            "Edit Teacher";
+          new bootstrap.Modal(
+            document.getElementById("addTeacherModal")
+          ).show();
+        }
+
+        function createTeacherRow(data) {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+      <td>
+        <div class="d-flex align-items-center">
+          <div class="user-avatar me-3">${data.firstName[0]}${
+            data.lastName[0]
+          }</div>
+          <div>
+            <div class="fw-bold">${data.firstName} ${data.lastName}</div>
+            <div class="text-muted small">${data.qualifications}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class="text-muted small">${data.email}</div>
+        <div class="text-muted small">${data.phone}</div>
+      </td>
+      <td>${Array.from(data.subjects).join(", ")}</td>
+      <td><span class="status-badge ${getStatusClass(data.status)}">${
+            data.status
+          }</span></td>
+      <td>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="View">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Edit">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </td>
+    `;
+          return row;
+        }
+
+        function getStatusClass(status) {
+          return (
+            {
+              Active: "active",
+              Inactive: "inactive",
+              "On Leave": "pending",
+            }[status] || "inactive"
+          );
+        }
+
+        function updateStatistics(change) {
+          const totalTeachers = document.querySelector(".stats-card-value");
+          totalTeachers.textContent =
+            parseInt(totalTeachers.textContent) + change;
+        }
+      });
+    </script>
+  </body>
+</html>
