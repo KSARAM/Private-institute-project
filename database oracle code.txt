@@ -1,0 +1,121 @@
+CREATE TABLE teachers (
+    teacher_id NUMBER PRIMARY KEY,
+    first_name VARCHAR2(50) NOT NULL,
+    last_name VARCHAR2(50) NOT NULL,
+    email VARCHAR2(100) UNIQUE NOT NULL,
+    phone VARCHAR2(20),
+    address VARCHAR2(200),
+    qualification VARCHAR2(100),
+    hire_date DATE,
+    status VARCHAR2(20) CHECK (status IN ('Active', 'Inactive', 'On Leave')),
+    date_created DATE DEFAULT SYSDATE,
+    date_modified DATE DEFAULT SYSDATE
+);
+
+CREATE TABLE students (
+    student_id NUMBER PRIMARY KEY,
+    first_name VARCHAR2(50) NOT NULL,
+    last_name VARCHAR2(50) NOT NULL,
+    email VARCHAR2(100) UNIQUE NOT NULL,
+    phone VARCHAR2(20),
+    address VARCHAR2(200),
+    enrollment_date DATE,
+    status VARCHAR2(20) CHECK (status IN ('Active', 'Inactive', 'Graduated')),
+    date_created DATE DEFAULT SYSDATE,
+    date_modified DATE DEFAULT SYSDATE
+);
+
+
+CREATE TABLE subjects (
+    subject_id NUMBER PRIMARY KEY,
+    subject_name VARCHAR2(100) NOT NULL,
+    description VARCHAR2(500),
+    duration_hours NUMBER,
+    date_created DATE DEFAULT SYSDATE,
+    date_modified DATE DEFAULT SYSDATE
+);
+
+CREATE TABLE classes (
+    class_id NUMBER PRIMARY KEY,
+    class_name VARCHAR2(100) NOT NULL,
+    capacity NUMBER,
+    room_number VARCHAR2(20),
+    date_created DATE DEFAULT SYSDATE,
+    date_modified DATE DEFAULT SYSDATE
+);
+
+
+CREATE TABLE teacher_subjects (
+    teacher_subject_id NUMBER PRIMARY KEY,
+    teacher_id NUMBER REFERENCES teachers(teacher_id),
+    subject_id NUMBER REFERENCES subjects(subject_id),
+    date_created DATE DEFAULT SYSDATE,
+    CONSTRAINT uk_teacher_subject UNIQUE (teacher_id, subject_id)
+);
+
+
+CREATE TABLE student_subjects (
+    enrollment_id NUMBER PRIMARY KEY,
+    student_id NUMBER REFERENCES students(student_id),
+    subject_id NUMBER REFERENCES subjects(subject_id),
+    enrollment_date DATE DEFAULT SYSDATE,
+    status VARCHAR2(20) CHECK (status IN ('Enrolled', 'Completed', 'Dropped')),
+    grade VARCHAR2(5),
+    date_created DATE DEFAULT SYSDATE,
+    date_modified DATE DEFAULT SYSDATE,
+    CONSTRAINT uk_student_subject UNIQUE (student_id, subject_id)
+);
+
+
+
+CREATE TABLE class_schedule (
+    schedule_id NUMBER PRIMARY KEY,
+    class_id NUMBER REFERENCES classes(class_id),
+    subject_id NUMBER REFERENCES subjects(subject_id),
+    teacher_id NUMBER REFERENCES teachers(teacher_id),
+    day_of_week VARCHAR2(10) CHECK (day_of_week IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')),
+    start_time TIMESTAMP,
+    end_time TIMESTAMP,
+    date_created DATE DEFAULT SYSDATE,
+    date_modified DATE DEFAULT SYSDATE,
+    CONSTRAINT valid_time_range CHECK (end_time > start_time)
+);
+
+
+CREATE TABLE student_payments (
+    payment_id NUMBER PRIMARY KEY,
+    student_id NUMBER REFERENCES students(student_id),
+    amount NUMBER(10,2) NOT NULL,
+    payment_date DATE DEFAULT SYSDATE,
+    payment_method VARCHAR2(50),
+    description VARCHAR2(200),
+    receipt_number VARCHAR2(50),
+    date_created DATE DEFAULT SYSDATE
+);
+
+CREATE TABLE teacher_payments (
+    payment_id NUMBER PRIMARY KEY,
+    teacher_id NUMBER REFERENCES teachers(teacher_id),
+    amount NUMBER(10,2) NOT NULL,
+    payment_date DATE DEFAULT SYSDATE,
+    payment_method VARCHAR2(50),
+    description VARCHAR2(200),
+    payment_period_start DATE,
+    payment_period_end DATE,
+    date_created DATE DEFAULT SYSDATE
+);
+
+CREATE TABLE users (
+    user_id NUMBER PRIMARY KEY,
+    username VARCHAR2(50) UNIQUE NOT NULL,
+    password VARCHAR2(100) NOT NULL,
+    email VARCHAR2(100) UNIQUE NOT NULL,
+    role VARCHAR2(20) CHECK (role IN ('Admin', 'Student')),
+    related_id NUMBER,  -- Points to either student_id or NULL for admin
+    last_login TIMESTAMP,
+    is_active NUMBER(1) DEFAULT 1,
+    date_created DATE DEFAULT SYSDATE,
+    date_modified DATE DEFAULT SYSDATE
+);
+
+
